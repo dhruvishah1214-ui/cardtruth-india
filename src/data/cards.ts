@@ -2617,9 +2617,9 @@ export const CREDIT_CARDS: CreditCard[] = [
       finePrintTrap: 'Regular reward rate is mediocre (1-2%). The card is worth it primarily for Movie BOGO & Alumni LTF status.'
     },
     accountRequirement: {
-      isAccountNeeded: false,
-      tierName: 'Alumni LTF Offer Available',
-      details: 'Offered 100% Lifetime Free (₹0 forever) for graduates of top Tier-1 Indian institutes (IIT/IIM/NIT/BITS/XLRI)'
+      isAccountNeeded: true,
+      tierName: 'ICICI Wealth / Alumni Program',
+      details: 'Offered 100% Lifetime Free (₹0) to ICICI Wealth Banking holders & top-tier alumni (IIT/IIM/NIT/BITS/XLRI).'
     },
     loungeAccess: {
       domesticQuarterly: 4,
@@ -2864,7 +2864,7 @@ export const CREDIT_CARDS: CreditCard[] = [
     isLTF: true,
     feeWaiverSpend: null,
     forexMarkup: 1.5,
-    netReturnValueScore: 78,
+    netReturnValueScore: 89,
     netReturnRate: '1.67% – 2.5%',
     netReturnSummary: "Lifetime Free premium card offering 4 complimentary domestic & international lounge + airport spa visits per calendar quarter (on ₹20k spend), free golf rounds, and low 1.5% forex markup.",
     returnStructure: {
@@ -2876,9 +2876,9 @@ export const CREDIT_CARDS: CreditCard[] = [
       finePrintTrap: "Wallet loads, rent, and government transactions earn 1X point only"
     },
     accountRequirement: {
-      isAccountNeeded: false,
-      tierName: 'Open to All / Existing IDFC Customers',
-      details: 'Eligibility requires ₹36L/yr income or upgrade from Select card.'
+      isAccountNeeded: true,
+      tierName: 'IDFC FIRST Wealth Account',
+      details: '100% Lifetime Free (₹0) by default for IDFC Wealth Banking customers (₹10L AQB or ₹1.5L/mo salary).'
     },
     loungeAccess: {
       domesticQuarterly: 4,
@@ -3644,7 +3644,69 @@ export const CREDIT_CARDS: CreditCard[] = [
       pattern: 'carbon-weave',
       chipColor: 'silver'
     }
-  }
+  },
+  {
+    id: 'indusind-pioneer-heritage',
+    name: 'IndusInd Pioneer Heritage Metal',
+    bank: 'IndusInd',
+    network: 'Mastercard',
+    tier: 'Super-Premium',
+    cardType: 'Travel',
+    joiningFee: 0,
+    annualFee: 0,
+    isLTF: true,
+    feeWaiverSpend: null,
+    forexMarkup: 1.8,
+    netReturnValueScore: 93,
+    netReturnRate: '1.5% – 2.5%',
+    netReturnSummary: '100% Lifetime Free for IndusInd Pioneer Wealth clients. Unlimited Domestic & International Lounges (Priority Pass), BOGO BookMyShow up to ₹1,000/ticket, and ₹0 minimum spend lounge gate.',
+    returnStructure: {
+      basePercent: 1.5,
+      maxPercent: 2.5,
+      rewardType: 'Reward Points',
+      multiplierDetail: '1.5 - 2.5 reward points per ₹100 spent. Points can be converted to air miles or statement credit.',
+      monthlyCap: 'No cap on reward points',
+      finePrintTrap: 'Issued strictly to IndusInd Pioneer Wealth Banking relationship holders.'
+    },
+    accountRequirement: {
+      isAccountNeeded: true,
+      tierName: 'IndusInd Pioneer Wealth Account',
+      details: '100% Lifetime Free (₹0) for Pioneer Wealth account holders (₹10L AQB or ₹30L TRV).'
+    },
+    loungeAccess: {
+      domesticQuarterly: 99,
+      internationalYearly: 99,
+      spendRequiredPreviousQuarter: 0,
+      provider: 'Priority Pass & DreamFolks',
+      notes: 'Unlimited domestic and international lounge visits with ₹0 minimum spend.'
+    },
+    rupayUPI: false,
+    welcomeBonus: 'Complimentary luxury gift voucher and welcome milestone benefits on onboarding',
+    keyMilestones: [
+      'Unlimited domestic & international lounges via Priority Pass',
+      'Buy 1 Get 1 on BookMyShow (up to ₹1,000 per ticket twice a month)',
+      'Complimentary golf games and lessons every quarter'
+    ],
+    rewardHighlights: {
+      baseRate: '1.5% Base Rewards',
+      accelerated: '2.5% on international luxury spend'
+    },
+    exclusions: ['Fuel surcharge waiver applies; rent and wallet loads excluded from accelerated rewards'],
+    validityStatus: {
+      status: 'Verified Active',
+      badgeColor: 'emerald',
+      lastVerifiedDate: 'Verified Nov 2026',
+      mitcRef: 'IndusInd Pioneer Schedule of Charges'
+    },
+    bestFor: 'Ultimate Lifetime Free Luxury: Unlimited Lounges + ₹1,000 Movie BOGO for Pioneer Wealth Holders',
+    cardArt: {
+      bgGradient: 'from-amber-950 via-slate-900 to-black',
+      textColor: 'text-amber-300',
+      accentColor: '#f59e0b',
+      pattern: 'gold-foil',
+      chipColor: 'gold'
+    }
+  },
 ];
 
 export const DEVALUATION_NEWS = [

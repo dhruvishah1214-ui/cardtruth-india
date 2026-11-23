@@ -26,6 +26,7 @@ export function App() {
   const [onlyRuPay, setOnlyRuPay] = useState<boolean>(false);
   const [onlyZeroForex, setOnlyZeroForex] = useState<boolean>(false);
   const [onlyNoAccountNeeded, setOnlyNoAccountNeeded] = useState<boolean>(false);
+  const [onlyWealthLTF, setOnlyWealthLTF] = useState<boolean>(false);
 
   // Modals state
   const [selectedCardForDetail, setSelectedCardForDetail] = useState<CreditCard | null>(null);
@@ -156,6 +157,12 @@ export function App() {
       if (onlyRuPay && !card.rupayUPI) return false;
       if (onlyZeroForex && card.forexMarkup > 0) return false;
       if (onlyNoAccountNeeded && card.accountRequirement.isAccountNeeded) return false;
+      if (onlyWealthLTF) {
+        const req = (card.accountRequirement.tierName + ' ' + card.accountRequirement.details).toLowerCase();
+        if (!req.includes('wealth') && !req.includes('pioneer') && !req.includes('alumni')) {
+          return false;
+        }
+      }
 
       return true;
     });
@@ -354,6 +361,17 @@ export function App() {
                 }`}
               >
                 Lifetime Free (₹0)
+              </button>
+
+              <button
+                onClick={() => setOnlyWealthLTF(!onlyWealthLTF)}
+                className={`px-3 py-1 rounded-lg text-xs font-semibold border transition flex items-center space-x-1 ${
+                  onlyWealthLTF
+                    ? 'bg-purple-600 text-white border-purple-600 font-bold shadow-xs'
+                    : 'bg-purple-50/70 border-purple-200 text-purple-900 hover:bg-purple-100'
+                }`}
+              >
+                <span>💎 Free for Wealth Accounts</span>
               </button>
 
               <button

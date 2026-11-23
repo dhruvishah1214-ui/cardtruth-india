@@ -91,6 +91,13 @@ export const MasterTable: React.FC<MasterTableProps> = ({ cards, selectedTier = 
                 <span>Top Value</span>
               </span>
             )}
+            {(card.accountRequirement.tierName.toLowerCase().includes('wealth') || 
+              card.accountRequirement.tierName.toLowerCase().includes('pioneer') || 
+              card.accountRequirement.tierName.toLowerCase().includes('alumni')) && (
+              <span className="px-2 py-0.5 rounded-full bg-purple-100 text-purple-900 border border-purple-300 font-black text-[9px] uppercase tracking-wider shadow-xs inline-flex items-center space-x-0.5">
+                <span>💎 LTF via Wealth</span>
+              </span>
+            )}
             {card.tier === 'Super-Premium' && (
               <span className="px-1.5 py-0.2 rounded bg-slate-900 text-amber-300 border border-slate-700 text-[9px] font-black uppercase tracking-wider">
                 Metal
@@ -142,7 +149,18 @@ export const MasterTable: React.FC<MasterTableProps> = ({ cards, selectedTier = 
               <span className="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-black bg-emerald-50 text-emerald-700 border border-emerald-200">
                 ₹0 (Free)
               </span>
-              <span className="text-[10px] text-slate-400 block mt-0.5">Lifetime Free</span>
+              <span className="text-[10px] text-slate-400 block mt-0.5">
+                {card.accountRequirement.tierName.toLowerCase().includes('wealth') || card.accountRequirement.tierName.toLowerCase().includes('pioneer')
+                  ? 'Free via Wealth A/C'
+                  : 'Lifetime Free'}
+              </span>
+            </div>
+          ) : card.accountRequirement.tierName.toLowerCase().includes('alumni') ? (
+            <div>
+              <span className="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-black bg-purple-50 text-purple-800 border border-purple-200">
+                ₹0 (LTF Alumni)
+              </span>
+              <span className="text-[10px] text-slate-400 block mt-0.5">₹{card.annualFee.toLocaleString('en-IN')}/yr regular</span>
             </div>
           ) : (
             <div>
