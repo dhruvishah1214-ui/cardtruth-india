@@ -6,7 +6,7 @@ import {
   TrendingUp, 
   ShieldCheck, 
   Coins, 
-  CheckCircle2,
+  CreditCard as CardIcon,
   Sparkles
 } from 'lucide-react';
 
@@ -67,7 +67,7 @@ export const MasterTable: React.FC<MasterTableProps> = ({ cards, selectedTier = 
         }`}
       >
         {/* 1. Rank & Best Value Pill */}
-        <td className="py-4 px-3 text-center">
+        <td className="py-3.5 px-3 text-center">
           {isTopValue ? (
             <div className="w-6 h-6 rounded-full bg-amber-500 text-slate-950 flex items-center justify-center font-black text-xs mx-auto shadow-xs" title="Top Value For Money">
               1
@@ -80,7 +80,7 @@ export const MasterTable: React.FC<MasterTableProps> = ({ cards, selectedTier = 
         </td>
 
         {/* 2. Card Name & Issuer */}
-        <td className="py-4 px-4 min-w-[220px]">
+        <td className="py-3.5 px-4 min-w-[210px]">
           <div className="flex items-center space-x-1.5 flex-wrap gap-1">
             <span className="font-black text-slate-900 group-hover:text-blue-600 transition text-sm">
               {card.name}
@@ -107,7 +107,7 @@ export const MasterTable: React.FC<MasterTableProps> = ({ cards, selectedTier = 
         </td>
 
         {/* 3. True Net Return */}
-        <td className="py-4 px-4 min-w-[170px]">
+        <td className="py-3.5 px-4 min-w-[160px]">
           <div className="flex items-center space-x-1.5">
             <span className="text-blue-700 font-black text-sm tracking-tight">
               {card.netReturnRate}
@@ -135,47 +135,55 @@ export const MasterTable: React.FC<MasterTableProps> = ({ cards, selectedTier = 
           </div>
         </td>
 
-        {/* 4. Annual Fee & Minimum Spend Rule (Explains Fee vs Spend Waiver) */}
-        <td className="py-4 px-4 min-w-[200px]">
+        {/* 4. Annual Fee (Super Simple) */}
+        <td className="py-3.5 px-4 min-w-[130px]">
           {card.isLTF ? (
             <div>
-              <span className="inline-flex items-center space-x-1 px-2 py-0.5 rounded-md text-[10px] font-black bg-emerald-100 text-emerald-900 border border-emerald-300">
-                <CheckCircle2 className="w-3 h-3 text-emerald-600" />
-                <span>100% Free Forever</span>
+              <span className="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-black bg-emerald-50 text-emerald-700 border border-emerald-200">
+                ₹0 (Free)
               </span>
-              <span className="text-[10px] text-slate-500 block mt-0.5 font-medium">
-                ₹0 Fee • No minimum spend needed
-              </span>
-            </div>
-          ) : card.feeWaiverSpend ? (
-            <div>
-              <div className="text-xs font-black text-slate-900">
-                ₹{card.annualFee.toLocaleString('en-IN')}/yr
-              </div>
-              <div className="text-[11px] font-bold text-emerald-800 mt-0.5">
-                Waived if spend &gt; ₹{(card.feeWaiverSpend / 100000).toFixed(1)}L/yr
-              </div>
-              <div className="text-[10px] text-rose-600 font-medium">
-                ⚠️ If below, ₹{card.annualFee.toLocaleString('en-IN')} fee applies
-              </div>
+              <span className="text-[10px] text-slate-400 block mt-0.5">Lifetime Free</span>
             </div>
           ) : (
             <div>
               <div className="text-xs font-black text-slate-900">
                 ₹{card.annualFee.toLocaleString('en-IN')}/yr
               </div>
-              <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-900 border border-amber-300 mt-0.5">
-                Mandatory Fee (No Waiver)
-              </span>
-              <span className="text-[10px] text-slate-500 block mt-0.5">
-                Fee applies regardless of spend
-              </span>
+              <span className="text-[10px] text-slate-400 block mt-0.5">Annual renewal</span>
             </div>
           )}
         </td>
 
-        {/* 5. Airport Lounge & Min Spend */}
-        <td className="py-4 px-4 min-w-[160px]">
+        {/* 5. Minimum Spend to Waive Fee (Dead Simple) */}
+        <td className="py-3.5 px-4 min-w-[165px]">
+          {card.isLTF ? (
+            <div>
+              <span className="text-xs font-black text-emerald-700">₹0 (Always Free)</span>
+              <span className="text-[10px] text-slate-400 block mt-0.5">No spend required</span>
+            </div>
+          ) : card.feeWaiverSpend ? (
+            <div>
+              <div className="text-xs font-black text-slate-900">
+                Spend ₹{card.feeWaiverSpend >= 100000 
+                  ? `${(card.feeWaiverSpend / 100000).toFixed(card.feeWaiverSpend % 100000 === 0 ? 0 : 1)} Lakhs` 
+                  : `${(card.feeWaiverSpend / 1000).toFixed(0)}k`}/yr
+              </div>
+              <span className="text-[10px] text-emerald-700 font-bold block mt-0.5">
+                Fee becomes ₹0
+              </span>
+            </div>
+          ) : (
+            <div>
+              <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-amber-50 text-amber-900 border border-amber-200">
+                No Waiver
+              </span>
+              <span className="text-[10px] text-slate-400 block mt-0.5">Fixed annual fee</span>
+            </div>
+          )}
+        </td>
+
+        {/* 6. Airport Lounge */}
+        <td className="py-3.5 px-4 min-w-[150px]">
           {card.loungeAccess.domesticQuarterly > 0 ? (
             <div>
               <div className="flex items-center space-x-1 text-xs font-bold text-slate-900">
@@ -201,13 +209,13 @@ export const MasterTable: React.FC<MasterTableProps> = ({ cards, selectedTier = 
           )}
         </td>
 
-        {/* 6. Killer Perk */}
-        <td className="py-4 px-4 text-xs text-slate-700 font-medium leading-relaxed min-w-[240px]">
+        {/* 7. Killer Perk */}
+        <td className="py-3.5 px-4 text-xs text-slate-700 font-medium leading-relaxed min-w-[220px]">
           {card.bestFor}
         </td>
 
-        {/* 7. Action */}
-        <td className="py-4 px-4 text-right min-w-[110px]">
+        {/* 8. Action */}
+        <td className="py-3.5 px-4 text-right min-w-[100px]">
           <button className="px-3 py-1.5 rounded-xl bg-slate-100 group-hover:bg-blue-600 text-slate-700 group-hover:text-white font-bold text-xs transition inline-flex items-center space-x-1 shadow-xs">
             <span>Audit</span>
             <ArrowRight className="w-3 h-3" />
@@ -229,7 +237,7 @@ export const MasterTable: React.FC<MasterTableProps> = ({ cards, selectedTier = 
             </span>
           </div>
           <p className="text-xs text-slate-500 mt-0.5">
-            Top value-for-money cards shown first in each category. Click any row for complete rules.
+            Top value-for-money cards shown first in each category. Click any row for complete details.
           </p>
         </div>
 
@@ -244,22 +252,28 @@ export const MasterTable: React.FC<MasterTableProps> = ({ cards, selectedTier = 
           <thead>
             <tr className="border-b border-slate-200 bg-slate-50 text-slate-600 font-bold uppercase tracking-wider text-[11px]">
               <th className="py-3 px-3 text-center w-12">Rank</th>
-              <th className="py-3 px-4 min-w-[220px]">Card & Issuer</th>
-              <th className="py-3 px-4 min-w-[170px]">
+              <th className="py-3 px-4 min-w-[210px]">Card & Issuer</th>
+              <th className="py-3 px-4 min-w-[160px]">
                 <div className="flex items-center space-x-1.5">
                   <TrendingUp className="w-3.5 h-3.5 text-blue-600" />
                   <span>True Net Return</span>
                 </div>
               </th>
-              <th className="py-3 px-4 min-w-[200px]">
+              <th className="py-3 px-4 min-w-[130px]">
                 <div className="flex items-center space-x-1.5">
-                  <Coins className="w-3.5 h-3.5 text-amber-600" />
-                  <span>Fee & Spend Waiver</span>
+                  <CardIcon className="w-3.5 h-3.5 text-slate-500" />
+                  <span>Annual Fee</span>
                 </div>
               </th>
-              <th className="py-3 px-4 min-w-[160px]">Airport Lounge</th>
-              <th className="py-3 px-4 min-w-[240px]">Why It Wins</th>
-              <th className="py-3 px-4 text-right min-w-[110px]">Details</th>
+              <th className="py-3 px-4 min-w-[165px]">
+                <div className="flex items-center space-x-1.5">
+                  <Coins className="w-3.5 h-3.5 text-amber-600" />
+                  <span>Spend to Make it ₹0</span>
+                </div>
+              </th>
+              <th className="py-3 px-4 min-w-[150px]">Airport Lounge</th>
+              <th className="py-3 px-4 min-w-[220px]">Why It Wins</th>
+              <th className="py-3 px-4 text-right min-w-[100px]">Details</th>
             </tr>
           </thead>
 
@@ -271,7 +285,7 @@ export const MasterTable: React.FC<MasterTableProps> = ({ cards, selectedTier = 
                   <React.Fragment key={section.key}>
                     {/* Sleek Category Header */}
                     <tr className={section.headerBg}>
-                      <td colSpan={7} className="py-2.5 px-4">
+                      <td colSpan={8} className="py-2.5 px-4">
                         <div className="flex flex-wrap items-center justify-between gap-2">
                           <div className="flex items-center space-x-2">
                             <span className="text-xs sm:text-sm font-black text-slate-900">
