@@ -6,7 +6,8 @@ import {
   TrendingUp, 
   ShieldCheck, 
   Coins, 
-  CheckCircle2
+  CheckCircle2,
+  Sparkles
 } from 'lucide-react';
 
 interface MasterTableProps {
@@ -16,58 +17,82 @@ interface MasterTableProps {
 }
 
 export const MasterTable: React.FC<MasterTableProps> = ({ cards, selectedTier = 'All', onSelectCard }) => {
-  const premiumCards = cards.filter(c => c.tier === 'Premium' || c.tier === 'Super-Premium');
-  const midCards = cards.filter(c => c.tier === 'Mid-Tier');
-  const beginnerCards = cards.filter(c => c.tier === 'Beginner');
+  const sortByValue = (a: CreditCard, b: CreditCard) => b.netReturnValueScore - a.netReturnValueScore;
+
+  const beginnerCards = cards.filter(c => c.tier === 'Beginner').sort(sortByValue);
+  const midCards = cards.filter(c => c.tier === 'Mid-Tier').sort(sortByValue);
+  const premiumCards = cards.filter(c => c.tier === 'Premium' || c.tier === 'Super-Premium').sort(sortByValue);
 
   const tierSections = [
     {
-      key: 'premium',
-      title: '👑 Premium & Super-Premium Cards',
-      badge: `${premiumCards.length} Cards`,
-      badgeClass: 'bg-amber-100 text-amber-900 border-amber-300',
-      summary: 'Heavy Metal Cards • Unlimited Lounges + Guests • 3.3%–33.3% Return',
-      headerBg: 'bg-amber-50/70 border-y border-amber-200 text-amber-950',
-      cards: premiumCards
+      key: 'beginner',
+      title: '🌱 Beginner & High-Value Essentials',
+      badge: `${beginnerCards.length} Cards`,
+      badgeClass: 'bg-emerald-100 text-emerald-900 border-emerald-300',
+      summary: '100% Lifetime Free (LTF) • RuPay UPI QR Payments • Top Everyday Value',
+      headerBg: 'bg-emerald-50/80 border-y border-emerald-200 text-emerald-950',
+      cards: beginnerCards
     },
     {
       key: 'mid',
-      title: '⚡ Mid-Tier & Everyday Lifestyle Cards',
+      title: '⚡ Mid-Tier & Everyday Cashback Kings',
       badge: `${midCards.length} Cards`,
       badgeClass: 'bg-blue-100 text-blue-900 border-blue-300',
-      summary: '5% Accelerated Online Cashback • Dining Perks • Domestic Lounges',
-      headerBg: 'bg-blue-50/70 border-y border-blue-200 text-blue-950',
+      summary: '5%–10% Accelerated Online Cashback • Dining & Groceries • Domestic Lounges',
+      headerBg: 'bg-blue-50/80 border-y border-blue-200 text-blue-950',
       cards: midCards
     },
     {
-      key: 'beginner',
-      title: '🌱 Beginner & Starter Essentials',
-      badge: `${beginnerCards.length} Cards`,
-      badgeClass: 'bg-emerald-100 text-emerald-900 border-emerald-300',
-      summary: '100% Lifetime Free (LTF) • RuPay UPI QR Payments • High Everyday Utility',
-      headerBg: 'bg-emerald-50/70 border-y border-emerald-200 text-emerald-950',
-      cards: beginnerCards
+      key: 'premium',
+      title: '👑 Premium & Super-Premium Luxury',
+      badge: `${premiumCards.length} Cards`,
+      badgeClass: 'bg-amber-100 text-amber-900 border-amber-300',
+      summary: 'Heavy Metal Cards • Unlimited Lounges + Guests • 3.3%–33.3% Travel Return',
+      headerBg: 'bg-amber-50/80 border-y border-amber-200 text-amber-950',
+      cards: premiumCards
     }
   ];
 
   const renderCardRow = (card: CreditCard, index: number) => {
+    const isTopValue = index === 0;
+
     return (
       <tr
         key={card.id}
         onClick={() => onSelectCard(card)}
-        className="transition-colors cursor-pointer bg-white hover:bg-slate-50/80 group border-b border-slate-100"
+        className={`transition-colors cursor-pointer group border-b border-slate-100 ${
+          isTopValue 
+            ? 'bg-amber-50/30 hover:bg-amber-50/60 border-l-4 border-l-amber-500' 
+            : 'bg-white hover:bg-slate-50/80'
+        }`}
       >
-        {/* 1. Rank */}
-        <td className="py-4 px-3 text-center font-bold text-xs text-slate-400 group-hover:text-blue-600 transition">
-          {index + 1}
+        {/* 1. Rank & Best Value Pill */}
+        <td className="py-4 px-3 text-center">
+          {isTopValue ? (
+            <div className="w-6 h-6 rounded-full bg-amber-500 text-slate-950 flex items-center justify-center font-black text-xs mx-auto shadow-xs" title="Top Value For Money">
+              1
+            </div>
+          ) : (
+            <span className="font-bold text-xs text-slate-400 group-hover:text-blue-600 transition">
+              {index + 1}
+            </span>
+          )}
         </td>
 
         {/* 2. Card Name & Issuer */}
-        <td className="py-4 px-4 min-w-[210px]">
-          <div className="font-extrabold text-slate-900 group-hover:text-blue-600 transition text-sm flex items-center space-x-1.5">
-            <span>{card.name}</span>
+        <td className="py-4 px-4 min-w-[220px]">
+          <div className="flex items-center space-x-1.5 flex-wrap gap-1">
+            <span className="font-black text-slate-900 group-hover:text-blue-600 transition text-sm">
+              {card.name}
+            </span>
+            {isTopValue && (
+              <span className="px-2 py-0.5 rounded-full bg-amber-400 text-slate-950 font-black text-[9px] uppercase tracking-wider shadow-xs inline-flex items-center space-x-0.5">
+                <Sparkles className="w-2.5 h-2.5" />
+                <span>Top Value</span>
+              </span>
+            )}
             {card.tier === 'Super-Premium' && (
-              <span className="px-1.5 py-0.2 rounded bg-amber-100 text-amber-800 border border-amber-300 text-[9px] font-black uppercase tracking-wider">
+              <span className="px-1.5 py-0.2 rounded bg-slate-900 text-amber-300 border border-slate-700 text-[9px] font-black uppercase tracking-wider">
                 Metal
               </span>
             )}
@@ -110,32 +135,41 @@ export const MasterTable: React.FC<MasterTableProps> = ({ cards, selectedTier = 
           </div>
         </td>
 
-        {/* 4. Annual Fee & Minimum Spend (Clean Unified Column) */}
-        <td className="py-4 px-4 min-w-[170px]">
+        {/* 4. Annual Fee & Minimum Spend Rule (Explains Fee vs Spend Waiver) */}
+        <td className="py-4 px-4 min-w-[200px]">
           {card.isLTF ? (
             <div>
-              <span className="inline-flex items-center space-x-1 text-xs font-black text-emerald-700">
-                <CheckCircle2 className="w-3.5 h-3.5" />
-                <span>₹0 (Lifetime Free)</span>
+              <span className="inline-flex items-center space-x-1 px-2 py-0.5 rounded-md text-[10px] font-black bg-emerald-100 text-emerald-900 border border-emerald-300">
+                <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+                <span>100% Free Forever</span>
               </span>
-              <span className="text-[11px] text-slate-500 block mt-0.5 font-medium">
-                No minimum spend
+              <span className="text-[10px] text-slate-500 block mt-0.5 font-medium">
+                ₹0 Fee • No minimum spend needed
               </span>
+            </div>
+          ) : card.feeWaiverSpend ? (
+            <div>
+              <div className="text-xs font-black text-slate-900">
+                ₹{card.annualFee.toLocaleString('en-IN')}/yr
+              </div>
+              <div className="text-[11px] font-bold text-emerald-800 mt-0.5">
+                Waived if spend &gt; ₹{(card.feeWaiverSpend / 100000).toFixed(1)}L/yr
+              </div>
+              <div className="text-[10px] text-rose-600 font-medium">
+                ⚠️ If below, ₹{card.annualFee.toLocaleString('en-IN')} fee applies
+              </div>
             </div>
           ) : (
             <div>
-              <div className="text-xs font-extrabold text-slate-900">
+              <div className="text-xs font-black text-slate-900">
                 ₹{card.annualFee.toLocaleString('en-IN')}/yr
               </div>
-              <div className="text-[11px] text-slate-600 mt-0.5">
-                {card.feeWaiverSpend ? (
-                  <span>
-                    Min Spend: <strong className="text-slate-900">₹{(card.feeWaiverSpend / 100000).toFixed(1)}L</strong>/yr
-                  </span>
-                ) : (
-                  <span className="text-slate-500">No fee waiver</span>
-                )}
-              </div>
+              <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-900 border border-amber-300 mt-0.5">
+                Mandatory Fee (No Waiver)
+              </span>
+              <span className="text-[10px] text-slate-500 block mt-0.5">
+                Fee applies regardless of spend
+              </span>
             </div>
           )}
         </td>
@@ -191,11 +225,11 @@ export const MasterTable: React.FC<MasterTableProps> = ({ cards, selectedTier = 
           <div className="flex items-center space-x-2">
             <h2 className="text-lg font-black text-slate-900">Credit Card Decision Matrix</h2>
             <span className="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-blue-50 text-blue-700 border border-blue-200">
-              Ranked by True Net Value
+              Ranked by Value for Money
             </span>
           </div>
           <p className="text-xs text-slate-500 mt-0.5">
-            Audited against bank Schedules of Charges and RBI MITC disclosures. Click any row for complete rules.
+            Top value-for-money cards shown first in each category. Click any row for complete rules.
           </p>
         </div>
 
@@ -209,18 +243,18 @@ export const MasterTable: React.FC<MasterTableProps> = ({ cards, selectedTier = 
         <table className="w-full text-left text-xs border-collapse">
           <thead>
             <tr className="border-b border-slate-200 bg-slate-50 text-slate-600 font-bold uppercase tracking-wider text-[11px]">
-              <th className="py-3 px-3 text-center w-12">#</th>
-              <th className="py-3 px-4 min-w-[210px]">Card & Issuer</th>
+              <th className="py-3 px-3 text-center w-12">Rank</th>
+              <th className="py-3 px-4 min-w-[220px]">Card & Issuer</th>
               <th className="py-3 px-4 min-w-[170px]">
                 <div className="flex items-center space-x-1.5">
                   <TrendingUp className="w-3.5 h-3.5 text-blue-600" />
                   <span>True Net Return</span>
                 </div>
               </th>
-              <th className="py-3 px-4 min-w-[170px]">
+              <th className="py-3 px-4 min-w-[200px]">
                 <div className="flex items-center space-x-1.5">
                   <Coins className="w-3.5 h-3.5 text-amber-600" />
-                  <span>Fee & Min. Spend</span>
+                  <span>Fee & Spend Waiver</span>
                 </div>
               </th>
               <th className="py-3 px-4 min-w-[160px]">Airport Lounge</th>
@@ -235,7 +269,7 @@ export const MasterTable: React.FC<MasterTableProps> = ({ cards, selectedTier = 
                 if (section.cards.length === 0) return null;
                 return (
                   <React.Fragment key={section.key}>
-                    {/* Sleek Tier Header */}
+                    {/* Sleek Category Header */}
                     <tr className={section.headerBg}>
                       <td colSpan={7} className="py-2.5 px-4">
                         <div className="flex flex-wrap items-center justify-between gap-2">
@@ -258,7 +292,7 @@ export const MasterTable: React.FC<MasterTableProps> = ({ cards, selectedTier = 
                 );
               })
             ) : (
-              cards.map((card, i) => renderCardRow(card, i))
+              cards.sort(sortByValue).map((card, i) => renderCardRow(card, i))
             )}
           </tbody>
         </table>
