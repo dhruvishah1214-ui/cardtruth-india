@@ -1,0 +1,92 @@
+import React from 'react';
+import { Search, Plane, QrCode, Globe2, Gift, Sparkles, Layers, Award } from 'lucide-react';
+
+interface HeroProps {
+  searchQuery: string;
+  onSearchChange: (q: string) => void;
+  activeQuickFilter: string | null;
+  onSelectQuickFilter: (filter: string | null) => void;
+}
+
+export const Hero: React.FC<HeroProps> = ({
+  searchQuery,
+  onSearchChange,
+  activeQuickFilter,
+  onSelectQuickFilter
+}) => {
+  const curatedDecks = [
+    { id: 'best-cards', label: '⭐ Best Cards (Top Picks)', icon: Award },
+    { id: null, label: 'All 39 Cards', icon: Layers },
+    { id: 'lounge-free', label: '₹0 Spend Lounge', icon: Plane },
+    { id: 'cashback', label: '5-10% Pure Cashback', icon: Sparkles },
+    { id: 'zero-forex', label: '0% Forex Markup', icon: Globe2 },
+    { id: 'rupay-upi', label: 'RuPay UPI', icon: QrCode },
+    { id: 'ltf', label: 'Lifetime Free', icon: Gift },
+  ];
+
+  return (
+    <div className="relative pt-10 pb-8 px-4 sm:px-6 lg:px-8 border-b border-slate-200 bg-gradient-to-b from-blue-50/60 via-white to-slate-50">
+      <div className="max-w-4xl mx-auto text-center">
+        {/* Verification Status Pill */}
+        <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-white border border-blue-200/80 text-blue-900 mb-5 shadow-xs">
+          <span className="w-2 h-2 rounded-full bg-blue-600" />
+          <span className="text-slate-500">Live Regulatory Audit:</span>
+          <span className="text-blue-700 font-bold">November 2026 Bank Schedules</span>
+        </div>
+
+        {/* Hero Title */}
+        <h1 className="text-3xl sm:text-5xl md:text-6xl font-black tracking-tight text-slate-900 mb-4 leading-tight">
+          The Unfiltered Truth Behind <span className="text-blue-600">Indian Credit Cards</span>
+        </h1>
+
+        <p className="text-sm sm:text-base text-slate-600 max-w-2xl mx-auto mb-8 leading-relaxed font-normal">
+          Every fine print exclusion, quarterly lounge spend rule, and hidden fee waiver threshold—verified directly from bank regulatory filings, not AI guesswork.
+        </p>
+
+        {/* High-Contrast Search Input */}
+        <div className="relative max-w-xl mx-auto mb-7">
+          <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
+            <Search className="w-4 h-4 text-blue-600" />
+          </div>
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => onSearchChange(e.target.value)}
+            placeholder="Search by card (e.g. Infinia, Tiger, Scapia, Tata Neu)..."
+            className="w-full pl-11 pr-16 py-3.5 bg-white text-slate-900 placeholder-slate-400 rounded-2xl border-2 border-slate-200 focus:border-blue-600 focus:ring-4 focus:ring-blue-100 outline-none text-sm transition shadow-sm font-medium"
+          />
+          {searchQuery && (
+            <button
+              onClick={() => onSearchChange('')}
+              className="absolute inset-y-0 right-0 pr-4 flex items-center text-xs font-semibold text-slate-400 hover:text-slate-700"
+            >
+              Clear
+            </button>
+          )}
+        </div>
+
+        {/* Curated Decks Navigation */}
+        <div className="flex flex-wrap items-center justify-center gap-2">
+          {curatedDecks.map((deck) => {
+            const Icon = deck.icon;
+            const isSelected = activeQuickFilter === deck.id;
+            return (
+              <button
+                key={deck.label}
+                onClick={() => onSelectQuickFilter(deck.id)}
+                className={`inline-flex items-center space-x-2 px-3.5 py-2 rounded-xl text-xs font-semibold transition duration-200 border ${
+                  isSelected
+                    ? 'bg-blue-600 text-white border-blue-600 shadow-md shadow-blue-500/25 font-bold'
+                    : 'bg-white border-slate-200 text-slate-700 hover:text-blue-700 hover:bg-blue-50 hover:border-blue-300 shadow-xs'
+                }`}
+              >
+                <Icon className={`w-3.5 h-3.5 ${isSelected ? 'text-white' : 'text-blue-600'}`} />
+                <span>{deck.label}</span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+};
