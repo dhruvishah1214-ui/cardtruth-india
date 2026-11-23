@@ -1,18 +1,20 @@
 import React from 'react';
-import { Search, Plane, QrCode, Globe2, Gift, Sparkles, Layers, Award } from 'lucide-react';
+import { Search, Plane, QrCode, Globe2, Gift, Sparkles, Layers, Award, Play } from 'lucide-react';
 
 interface HeroProps {
   searchQuery: string;
   onSearchChange: (q: string) => void;
   activeQuickFilter: string | null;
   onSelectQuickFilter: (filter: string | null) => void;
+  onOpenReel?: () => void;
 }
 
 export const Hero: React.FC<HeroProps> = ({
   searchQuery,
   onSearchChange,
   activeQuickFilter,
-  onSelectQuickFilter
+  onSelectQuickFilter,
+  onOpenReel
 }) => {
   const curatedDecks = [
     { id: 'best-cards', label: '⭐ Best Cards (Top Picks)', icon: Award },
@@ -41,9 +43,27 @@ export const Hero: React.FC<HeroProps> = ({
           The Unfiltered Truth Behind <span className="text-blue-600">Indian Credit Cards</span>
         </h1>
 
-        <p className="text-sm sm:text-base text-slate-600 max-w-2xl mx-auto mb-8 leading-relaxed font-normal">
+        <p className="text-sm sm:text-base text-slate-600 max-w-2xl mx-auto mb-6 leading-relaxed font-normal">
           Every fine print exclusion, quarterly lounge spend rule, and hidden fee waiver threshold—verified directly from bank regulatory filings, not AI guesswork.
         </p>
+
+        {/* Watch Explainer Reel CTA */}
+        {onOpenReel && (
+          <div className="flex items-center justify-center mb-7">
+            <button
+              onClick={onOpenReel}
+              className="inline-flex items-center space-x-2 px-4 py-2 rounded-full text-xs sm:text-sm font-bold bg-slate-900 hover:bg-slate-800 text-white shadow-md hover:shadow-lg transition transform hover:-translate-y-0.5 border border-slate-700/60"
+            >
+              <div className="w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center">
+                <Play className="w-2.5 h-2.5 fill-emerald-400" />
+              </div>
+              <span>Watch 36s Explainer Reel</span>
+              <span className="px-1.5 py-0.5 rounded text-[10px] font-extrabold bg-gradient-to-r from-purple-500 to-indigo-500 text-white">
+                NEW
+              </span>
+            </button>
+          </div>
+        )}
 
         {/* High-Contrast Search Input */}
         <div className="relative max-w-xl mx-auto mb-7">

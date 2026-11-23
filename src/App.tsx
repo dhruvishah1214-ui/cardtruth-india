@@ -9,6 +9,7 @@ import { SpendCalculatorModal } from './components/SpendCalculatorModal';
 import { DevaluationModal } from './components/DevaluationModal';
 import { SubmitUpdateModal } from './components/SubmitUpdateModal';
 import { CompareDrawer } from './components/CompareDrawer';
+import { ReelModal } from './components/ReelModal';
 import { CREDIT_CARDS } from './data/cards';
 import type { CreditCard } from './data/cards';
 import { Scale, ShieldCheck, ArrowUpDown, CheckCircle2 } from 'lucide-react';
@@ -34,6 +35,7 @@ export function App() {
   const [isCalculatorModalOpen, setIsCalculatorModalOpen] = useState(false);
   const [isDevaluationModalOpen, setIsDevaluationModalOpen] = useState(false);
   const [isSubmitUpdateModalOpen, setIsSubmitUpdateModalOpen] = useState(false);
+  const [isReelModalOpen, setIsReelModalOpen] = useState(false);
 
   // Comparison selection
   const [comparedCardIds, setComparedCardIds] = useState<string[]>([]);
@@ -225,6 +227,7 @@ export function App() {
         onOpenLoungeChecker={() => setIsLoungeModalOpen(true)}
         onOpenDevaluations={() => setIsDevaluationModalOpen(true)}
         onOpenSubmitUpdate={() => setIsSubmitUpdateModalOpen(true)}
+        onOpenReel={() => setIsReelModalOpen(true)}
       />
 
       {/* Hero Section */}
@@ -233,6 +236,7 @@ export function App() {
         onSearchChange={setSearchQuery}
         activeQuickFilter={activeQuickFilter}
         onSelectQuickFilter={handleSelectQuickFilter}
+        onOpenReel={() => setIsReelModalOpen(true)}
       />
 
       {/* Main Content Area */}
@@ -529,6 +533,11 @@ export function App() {
       <SubmitUpdateModal
         isOpen={isSubmitUpdateModalOpen}
         onClose={() => setIsSubmitUpdateModalOpen(false)}
+      />
+
+      <ReelModal
+        isOpen={isReelModalOpen}
+        onClose={() => setIsReelModalOpen(false)}
       />
 
       <CompareDrawer
