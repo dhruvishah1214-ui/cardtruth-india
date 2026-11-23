@@ -66,7 +66,7 @@ export const Hero: React.FC<HeroProps> = ({
         )}
 
         {/* High-Contrast Search Input */}
-        <div className="relative max-w-xl mx-auto mb-7">
+        <div className="relative max-w-xl mx-auto mb-3">
           <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
             <Search className="w-4 h-4 text-blue-600" />
           </div>
@@ -74,7 +74,7 @@ export const Hero: React.FC<HeroProps> = ({
             type="text"
             value={searchQuery}
             onChange={(e) => onSearchChange(e.target.value)}
-            placeholder="Search by card (e.g. Infinia, Tiger, Scapia, Tata Neu)..."
+            placeholder="Search by card name, bank, or perk (e.g. Infinia, Cashback, Atlas)..."
             className="w-full pl-11 pr-16 py-3.5 bg-white text-slate-900 placeholder-slate-400 rounded-2xl border-2 border-slate-200 focus:border-blue-600 focus:ring-4 focus:ring-blue-100 outline-none text-sm transition shadow-sm font-medium"
           />
           {searchQuery && (
@@ -85,6 +85,20 @@ export const Hero: React.FC<HeroProps> = ({
               Clear
             </button>
           )}
+        </div>
+
+        {/* Trending Searches (Card Insider Style) */}
+        <div className="flex flex-wrap items-center justify-center gap-1.5 text-xs text-slate-500 mb-4">
+          <span className="font-bold text-slate-400 text-[11px] mr-1">Trending:</span>
+          {['Infinia', 'SBI Cashback', 'Axis Atlas', 'Scapia', 'Tata Neu', 'Sapphiro'].map((tag) => (
+            <button
+              key={tag}
+              onClick={() => onSearchChange(tag)}
+              className="px-2.5 py-0.5 rounded-full bg-white hover:bg-blue-50 text-slate-600 hover:text-blue-700 border border-slate-200 text-[11px] font-semibold transition"
+            >
+              {tag}
+            </button>
+          ))}
         </div>
 
         {/* Curated Decks Navigation */}

@@ -1,7 +1,6 @@
 import { useState, useMemo } from 'react';
 import { Header } from './components/Header';
 import { Hero } from './components/Hero';
-import { MasterTable } from './components/MasterTable';
 import { BestCardsSpotlight } from './components/BestCardsSpotlight';
 import { CardDetailModal } from './components/CardDetailModal';
 import { LoungeCheckerModal } from './components/LoungeCheckerModal';
@@ -10,15 +9,18 @@ import { DevaluationModal } from './components/DevaluationModal';
 import { SubmitUpdateModal } from './components/SubmitUpdateModal';
 import { CompareDrawer } from './components/CompareDrawer';
 import { ReelModal } from './components/ReelModal';
+import { CardInsiderCategories } from './components/CardInsiderCategories';
+import { CardInsiderListing } from './components/CardInsiderListing';
 import { CREDIT_CARDS } from './data/cards';
 import type { CreditCard } from './data/cards';
-import { Scale, ShieldCheck, ArrowUpDown, CheckCircle2 } from 'lucide-react';
+import { Scale, ShieldCheck, CheckCircle2 } from 'lucide-react';
 
 export function App() {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeQuickFilter, setActiveQuickFilter] = useState<string | null>(null);
   const [sortBy, setSortBy] = useState<'value' | 'fee-asc' | 'lounge-desc' | 'min-spend-asc'>('value');
   const [selectedTier, setSelectedTier] = useState<'All' | 'Beginner' | 'Mid-Tier' | 'Premium'>('All');
+  const [viewMode, setViewMode] = useState<'cards' | 'table'>('cards');
 
   // Faceted Filters
   const [selectedBank, setSelectedBank] = useState<string>('All');
@@ -101,6 +103,13 @@ export function App() {
       setOnlyLounge(false);
       setOnlyLTF(false);
       setOnlyRuPay(false);
+      setOnlyWealthLTF(false);
+    } else if (pillId === 'wealth-ltf') {
+      setOnlyWealthLTF(true);
+      setOnlyLTF(false);
+      setOnlyLounge(false);
+      setOnlyRuPay(false);
+      setOnlyZeroForex(false);
     }
   };
 
@@ -191,34 +200,6 @@ export function App() {
     return CREDIT_CARDS.filter((c) => comparedCardIds.includes(c.id));
   }, [comparedCardIds]);
 
-  const tierCounts = useMemo(() => {
-    return {
-      all: CREDIT_CARDS.length,
-      beginner: CREDIT_CARDS.filter(c => c.tier === 'Beginner').length,
-      mid: CREDIT_CARDS.filter(c => c.tier === 'Mid-Tier').length,
-      premium: CREDIT_CARDS.filter(c => c.tier === 'Premium' || c.tier === 'Super-Premium').length,
-    };
-  }, []);
-
-  const banksList = [
-    'All',
-    'Kotak',
-    'HDFC',
-    'SBI',
-    'Axis',
-    'ICICI',
-    'Amex',
-    'IndusInd',
-    'IDFC FIRST',
-    'Yes Bank',
-    'HSBC',
-    'AU Bank',
-    'Federal Bank',
-    'RBL',
-    'BOB',
-    'Standard Chartered'
-  ];
-
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col font-sans">
       {/* Top Header */}
@@ -247,234 +228,116 @@ export function App() {
           onSelectCard={(c) => setSelectedCardForDetail(c)}
         />
 
-        {/* Clean Unified Filter Bar */}
-        <div className="bg-white border border-slate-200 rounded-2xl p-4 mb-6 shadow-xs space-y-3">
-          {/* Row 1: Tiers & Bank Selection */}
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            {/* Category Tier Tabs */}
-            <div className="flex items-center space-x-1.5 overflow-x-auto scrollbar-none">
-              <button
-                onClick={() => setSelectedTier('All')}
-                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center space-x-1.5 ${
-                  selectedTier === 'All'
-                    ? 'bg-slate-900 text-white shadow-xs'
-                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-                }`}
-              >
-                <span>All Tiers</span>
-                <span className={`px-1.5 py-0.2 rounded-full text-[10px] ${
-                  selectedTier === 'All' ? 'bg-slate-700 text-slate-200' : 'bg-slate-200 text-slate-700'
-                }`}>
-                  {tierCounts.all}
-                </span>
-              </button>
+        {/* Card Insider Style Category Quick Cards & Bank Issuer Selector */}
+        <CardInsiderCategories
+          activeCategory={activeQuickFilter}
+          onSelectCategory={handleSelectQuickFilter}
+          selectedBank={selectedBank}
+          onSelectBank={setSelectedBank}
+          totalCards={CREDIT_CARDS.length}
+        />
 
-              <button
-                onClick={() => setSelectedTier('Beginner')}
-                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center space-x-1.5 ${
-                  selectedTier === 'Beginner'
-                    ? 'bg-emerald-600 text-white shadow-xs'
-                    : 'bg-slate-100 text-slate-600 hover:bg-emerald-50 hover:text-emerald-800'
-                }`}
-              >
-                <span>🌱 Beginner</span>
-                <span className={`px-1.5 py-0.2 rounded-full text-[10px] font-bold ${
-                  selectedTier === 'Beginner' ? 'bg-emerald-700 text-emerald-100' : 'bg-slate-200 text-slate-700'
-                }`}>
-                  {tierCounts.beginner}
-                </span>
-              </button>
+        {/* Feature Toggles Strip */}
+        <div className="flex flex-wrap items-center gap-2 mb-6 bg-white p-3 rounded-2xl border border-slate-200 shadow-xs">
+          <span className="text-[11px] font-black uppercase text-slate-400 tracking-wider mr-1">
+            Filter Perks:
+          </span>
 
-              <button
-                onClick={() => setSelectedTier('Mid-Tier')}
-                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center space-x-1.5 ${
-                  selectedTier === 'Mid-Tier'
-                    ? 'bg-blue-600 text-white shadow-xs'
-                    : 'bg-slate-100 text-slate-600 hover:bg-blue-50 hover:text-blue-800'
-                }`}
-              >
-                <span>⚡ Mid-Tier</span>
-                <span className={`px-1.5 py-0.2 rounded-full text-[10px] font-bold ${
-                  selectedTier === 'Mid-Tier' ? 'bg-blue-700 text-blue-100' : 'bg-slate-200 text-slate-700'
-                }`}>
-                  {tierCounts.mid}
-                </span>
-              </button>
+          <button
+            onClick={() => setOnlyNoAccountNeeded(!onlyNoAccountNeeded)}
+            className={`px-3 py-1 rounded-xl text-xs font-bold border transition flex items-center space-x-1 ${
+              onlyNoAccountNeeded
+                ? 'bg-emerald-600 text-white border-emerald-600 shadow-xs'
+                : 'bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100'
+            }`}
+          >
+            <CheckCircle2 className="w-3.5 h-3.5" />
+            <span>No Bank A/C Needed</span>
+          </button>
 
-              <button
-                onClick={() => setSelectedTier('Premium')}
-                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center space-x-1.5 ${
-                  selectedTier === 'Premium'
-                    ? 'bg-amber-600 text-white shadow-xs'
-                    : 'bg-slate-100 text-slate-600 hover:bg-amber-50 hover:text-amber-800'
-                }`}
-              >
-                <span>👑 Premium</span>
-                <span className={`px-1.5 py-0.2 rounded-full text-[10px] font-bold ${
-                  selectedTier === 'Premium' ? 'bg-amber-700 text-amber-100' : 'bg-slate-200 text-slate-700'
-                }`}>
-                  {tierCounts.premium}
-                </span>
-              </button>
-            </div>
+          <button
+            onClick={() => setOnlyLTF(!onlyLTF)}
+            className={`px-3 py-1 rounded-xl text-xs font-bold border transition ${
+              onlyLTF
+                ? 'bg-emerald-600 text-white border-emerald-600 shadow-xs'
+                : 'bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100'
+            }`}
+          >
+            🎁 Lifetime Free (₹0)
+          </button>
 
-            {/* Compact Bank Dropdown */}
-            <div className="flex items-center space-x-2">
-              <span className="text-xs font-bold text-slate-500">Bank:</span>
-              <select
-                value={selectedBank}
-                onChange={(e) => setSelectedBank(e.target.value)}
-                className="bg-white border border-slate-200 text-slate-800 text-xs font-semibold rounded-xl px-3 py-1.5 focus:outline-none focus:border-blue-600 shadow-xs"
-              >
-                {banksList.map((b) => (
-                  <option key={b} value={b}>
-                    {b === 'All' ? 'All Banks (16)' : b}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
+          <button
+            onClick={() => setOnlyWealthLTF(!onlyWealthLTF)}
+            className={`px-3 py-1 rounded-xl text-xs font-bold border transition flex items-center space-x-1 ${
+              onlyWealthLTF
+                ? 'bg-purple-600 text-white border-purple-600 shadow-xs'
+                : 'bg-purple-50/70 border-purple-200 text-purple-900 hover:bg-purple-100'
+            }`}
+          >
+            <span>💎 Free for Wealth Accounts</span>
+          </button>
 
-          {/* Row 2: Criteria Toggles & Sorting */}
-          <div className="flex flex-wrap items-center justify-between gap-3 pt-2.5 border-t border-slate-100">
-            {/* Feature Toggles */}
-            <div className="flex flex-wrap items-center gap-1.5">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 mr-1">
-                Filter:
-              </span>
+          <button
+            onClick={() => setOnlyLounge(!onlyLounge)}
+            className={`px-3 py-1 rounded-xl text-xs font-bold border transition ${
+              onlyLounge
+                ? 'bg-blue-600 text-white border-blue-600 shadow-xs'
+                : 'bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100'
+            }`}
+          >
+            ✈️ Has Airport Lounge
+          </button>
 
-              {/* No Account Needed Toggle */}
-              <button
-                onClick={() => setOnlyNoAccountNeeded(!onlyNoAccountNeeded)}
-                className={`px-3 py-1 rounded-lg text-xs font-semibold border transition flex items-center space-x-1 ${
-                  onlyNoAccountNeeded
-                    ? 'bg-emerald-600 text-white border-emerald-600 font-bold shadow-xs'
-                    : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
-                }`}
-              >
-                <CheckCircle2 className="w-3.5 h-3.5" />
-                <span>No Bank A/C Needed</span>
-              </button>
+          <button
+            onClick={() => setOnlyRuPay(!onlyRuPay)}
+            className={`px-3 py-1 rounded-xl text-xs font-bold border transition ${
+              onlyRuPay
+                ? 'bg-indigo-600 text-white border-indigo-600 shadow-xs'
+                : 'bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100'
+            }`}
+          >
+            ⚡ RuPay UPI
+          </button>
 
-              <button
-                onClick={() => setOnlyLTF(!onlyLTF)}
-                className={`px-3 py-1 rounded-lg text-xs font-semibold border transition ${
-                  onlyLTF
-                    ? 'bg-emerald-600 text-white border-emerald-600 font-bold shadow-xs'
-                    : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
-                }`}
-              >
-                Lifetime Free (₹0)
-              </button>
-
-              <button
-                onClick={() => setOnlyWealthLTF(!onlyWealthLTF)}
-                className={`px-3 py-1 rounded-lg text-xs font-semibold border transition flex items-center space-x-1 ${
-                  onlyWealthLTF
-                    ? 'bg-purple-600 text-white border-purple-600 font-bold shadow-xs'
-                    : 'bg-purple-50/70 border-purple-200 text-purple-900 hover:bg-purple-100'
-                }`}
-              >
-                <span>💎 Free for Wealth Accounts</span>
-              </button>
-
-              <button
-                onClick={() => setOnlyLounge(!onlyLounge)}
-                className={`px-3 py-1 rounded-lg text-xs font-semibold border transition ${
-                  onlyLounge
-                    ? 'bg-blue-600 text-white border-blue-600 font-bold shadow-xs'
-                    : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
-                }`}
-              >
-                Has Lounge
-              </button>
-
-              <button
-                onClick={() => setOnlyRuPay(!onlyRuPay)}
-                className={`px-3 py-1 rounded-lg text-xs font-semibold border transition ${
-                  onlyRuPay
-                    ? 'bg-indigo-600 text-white border-indigo-600 font-bold shadow-xs'
-                    : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
-                }`}
-              >
-                RuPay UPI
-              </button>
-
-              <button
-                onClick={() => setOnlyZeroForex(!onlyZeroForex)}
-                className={`px-3 py-1 rounded-lg text-xs font-semibold border transition ${
-                  onlyZeroForex
-                    ? 'bg-sky-600 text-white border-sky-600 font-bold shadow-xs'
-                    : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
-                }`}
-              >
-                0% Forex
-              </button>
-            </div>
-
-            {/* Sorting Dropdown */}
-            <div className="flex items-center space-x-2">
-              <ArrowUpDown className="w-3.5 h-3.5 text-slate-500" />
-              <span className="text-[11px] font-semibold text-slate-500">Sort By:</span>
-              <select
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value as any)}
-                className="bg-white border border-slate-200 text-slate-900 text-xs font-bold rounded-lg px-2.5 py-1 focus:outline-none focus:border-blue-600 shadow-xs"
-              >
-                <option value="value">Highest Net Value & Return</option>
-                <option value="min-spend-asc">Lowest Minimum Spend (Fee Waiver)</option>
-                <option value="fee-asc">Lowest Annual Fee</option>
-                <option value="lounge-desc">Most Lounge Access</option>
-              </select>
-            </div>
-          </div>
+          <button
+            onClick={() => setOnlyZeroForex(!onlyZeroForex)}
+            className={`px-3 py-1 rounded-xl text-xs font-bold border transition ${
+              onlyZeroForex
+                ? 'bg-sky-600 text-white border-sky-600 shadow-xs'
+                : 'bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100'
+            }`}
+          >
+            🌐 0% Forex Markup
+          </button>
         </div>
 
-        {/* Results Bar */}
-        <div className="flex items-center justify-between mb-4">
-          <div className="text-xs text-slate-600">
-            Showing <strong className="text-slate-900 font-bold">{filteredAndSortedCards.length}</strong> audited credit cards in India
-          </div>
-
-          {comparedCardIds.length > 0 && (
-            <button
-              onClick={() => setIsCompareDrawerOpen(true)}
-              className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs shadow-sm transition"
-            >
-              <Scale className="w-3.5 h-3.5" />
-              <span>Compare Selected ({comparedCardIds.length})</span>
-            </button>
-          )}
-        </div>
-
-        {/* Master Decision Table */}
-        {filteredAndSortedCards.length > 0 ? (
-          <MasterTable
-            cards={filteredAndSortedCards}
-            selectedTier={selectedTier}
-            onSelectCard={(c) => setSelectedCardForDetail(c)}
-          />
-        ) : (
-          <div className="text-center py-16 bg-white rounded-3xl border border-slate-200 shadow-sm">
-            <p className="text-slate-600 text-sm">No credit cards match your current search/filter combination.</p>
-            <button
-              onClick={() => {
-                setSearchQuery('');
-                setSelectedBank('All');
-                setOnlyLTF(false);
-                setOnlyLounge(false);
-                setOnlyRuPay(false);
-                setOnlyZeroForex(false);
-                setOnlyNoAccountNeeded(false);
-                setActiveQuickFilter(null);
-                setSortBy('value');
-              }}
-              className="mt-3 px-4 py-2 rounded-xl bg-blue-600 text-white text-xs font-bold hover:bg-blue-700 transition shadow-sm"
-            >
-              Reset Filters
-            </button>
-          </div>
-        )}
+        {/* Card Insider Cards & Table Listing */}
+        <CardInsiderListing
+          cards={filteredAndSortedCards}
+          viewMode={viewMode}
+          onViewModeChange={setViewMode}
+          sortBy={sortBy}
+          onSortByChange={setSortBy}
+          comparedCardIds={comparedCardIds}
+          onToggleCompare={(id) => {
+            if (comparedCardIds.includes(id)) {
+              setComparedCardIds(comparedCardIds.filter((i) => i !== id));
+            } else {
+              if (comparedCardIds.length >= 4) {
+                alert('You can compare up to 4 credit cards at a time.');
+                return;
+              }
+              setComparedCardIds([...comparedCardIds, id]);
+            }
+          }}
+          onOpenCompare={() => setIsCompareDrawerOpen(true)}
+          onSelectCard={(c) => setSelectedCardForDetail(c)}
+          onCheckLounge={(c) => {
+            setSelectedCardForDetail(c);
+            setIsLoungeModalOpen(true);
+          }}
+          selectedTier={selectedTier}
+        />
       </main>
 
       {/* Floating Compare Action Bar */}
