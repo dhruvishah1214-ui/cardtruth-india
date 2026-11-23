@@ -236,96 +236,92 @@ export function App() {
           onSelectCard={(c) => setSelectedCardForDetail(c)}
         />
 
-        {/* Filters and Controls on Top */}
-        <div className="bg-white border border-slate-200 rounded-2xl p-4 mb-6 shadow-sm space-y-3.5">
-          {/* Row 0: Category Tier Division Tabs */}
-          <div className="flex items-center space-x-2 pb-3 border-b border-slate-100 overflow-x-auto scrollbar-none">
-            <span className="text-[11px] font-black uppercase tracking-wider text-slate-500 mr-1 flex-shrink-0">
-              Category Tier:
-            </span>
-            <button
-              onClick={() => setSelectedTier('All')}
-              className={`px-3.5 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition flex items-center space-x-1.5 ${
-                selectedTier === 'All'
-                  ? 'bg-slate-900 text-white shadow-xs'
-                  : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
-              }`}
-            >
-              <span>All 3 Tiers</span>
-              <span className={`px-1.5 py-0.2 rounded-full text-[10px] ${
-                selectedTier === 'All' ? 'bg-slate-700 text-slate-200' : 'bg-slate-200 text-slate-700'
-              }`}>
-                {tierCounts.all}
-              </span>
-            </button>
-
-            <button
-              onClick={() => setSelectedTier('Beginner')}
-              className={`px-3.5 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition flex items-center space-x-1.5 ${
-                selectedTier === 'Beginner'
-                  ? 'bg-emerald-600 text-white shadow-xs font-extrabold'
-                  : 'bg-emerald-50 text-emerald-800 hover:bg-emerald-100 border border-emerald-200/80'
-              }`}
-            >
-              <span>🌱 Beginner & Starter</span>
-              <span className={`px-1.5 py-0.2 rounded-full text-[10px] font-bold ${
-                selectedTier === 'Beginner' ? 'bg-emerald-700 text-emerald-100' : 'bg-emerald-200/80 text-emerald-900'
-              }`}>
-                {tierCounts.beginner}
-              </span>
-            </button>
-
-            <button
-              onClick={() => setSelectedTier('Mid-Tier')}
-              className={`px-3.5 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition flex items-center space-x-1.5 ${
-                selectedTier === 'Mid-Tier'
-                  ? 'bg-blue-600 text-white shadow-xs font-extrabold'
-                  : 'bg-blue-50 text-blue-800 hover:bg-blue-100 border border-blue-200/80'
-              }`}
-            >
-              <span>⚡ Mid-Tier & Lifestyle</span>
-              <span className={`px-1.5 py-0.2 rounded-full text-[10px] font-bold ${
-                selectedTier === 'Mid-Tier' ? 'bg-blue-700 text-blue-100' : 'bg-blue-200/80 text-blue-900'
-              }`}>
-                {tierCounts.mid}
-              </span>
-            </button>
-
-            <button
-              onClick={() => setSelectedTier('Premium')}
-              className={`px-3.5 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition flex items-center space-x-1.5 ${
-                selectedTier === 'Premium'
-                  ? 'bg-amber-600 text-white shadow-xs font-extrabold'
-                  : 'bg-amber-50 text-amber-900 hover:bg-amber-100 border border-amber-200/80'
-              }`}
-            >
-              <span>👑 Premium & Metal</span>
-              <span className={`px-1.5 py-0.2 rounded-full text-[10px] font-bold ${
-                selectedTier === 'Premium' ? 'bg-amber-700 text-amber-100' : 'bg-amber-200/80 text-amber-900'
-              }`}>
-                {tierCounts.premium}
-              </span>
-            </button>
-          </div>
-
-          {/* Row 1: Bank Filter Tabs */}
-          <div className="flex items-center space-x-1.5 overflow-x-auto pb-1 sm:pb-0 scrollbar-none">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 mr-1 flex-shrink-0">
-              Bank:
-            </span>
-            {banksList.map((b) => (
+        {/* Clean Unified Filter Bar */}
+        <div className="bg-white border border-slate-200 rounded-2xl p-4 mb-6 shadow-xs space-y-3">
+          {/* Row 1: Tiers & Bank Selection */}
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            {/* Category Tier Tabs */}
+            <div className="flex items-center space-x-1.5 overflow-x-auto scrollbar-none">
               <button
-                key={b}
-                onClick={() => setSelectedBank(b)}
-                className={`px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition ${
-                  selectedBank === b
-                    ? 'bg-blue-600 text-white font-bold shadow-xs'
-                    : 'bg-slate-100 text-slate-700 hover:text-blue-700 hover:bg-blue-50'
+                onClick={() => setSelectedTier('All')}
+                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center space-x-1.5 ${
+                  selectedTier === 'All'
+                    ? 'bg-slate-900 text-white shadow-xs'
+                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
                 }`}
               >
-                {b}
+                <span>All Tiers</span>
+                <span className={`px-1.5 py-0.2 rounded-full text-[10px] ${
+                  selectedTier === 'All' ? 'bg-slate-700 text-slate-200' : 'bg-slate-200 text-slate-700'
+                }`}>
+                  {tierCounts.all}
+                </span>
               </button>
-            ))}
+
+              <button
+                onClick={() => setSelectedTier('Beginner')}
+                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center space-x-1.5 ${
+                  selectedTier === 'Beginner'
+                    ? 'bg-emerald-600 text-white shadow-xs'
+                    : 'bg-slate-100 text-slate-600 hover:bg-emerald-50 hover:text-emerald-800'
+                }`}
+              >
+                <span>🌱 Beginner</span>
+                <span className={`px-1.5 py-0.2 rounded-full text-[10px] font-bold ${
+                  selectedTier === 'Beginner' ? 'bg-emerald-700 text-emerald-100' : 'bg-slate-200 text-slate-700'
+                }`}>
+                  {tierCounts.beginner}
+                </span>
+              </button>
+
+              <button
+                onClick={() => setSelectedTier('Mid-Tier')}
+                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center space-x-1.5 ${
+                  selectedTier === 'Mid-Tier'
+                    ? 'bg-blue-600 text-white shadow-xs'
+                    : 'bg-slate-100 text-slate-600 hover:bg-blue-50 hover:text-blue-800'
+                }`}
+              >
+                <span>⚡ Mid-Tier</span>
+                <span className={`px-1.5 py-0.2 rounded-full text-[10px] font-bold ${
+                  selectedTier === 'Mid-Tier' ? 'bg-blue-700 text-blue-100' : 'bg-slate-200 text-slate-700'
+                }`}>
+                  {tierCounts.mid}
+                </span>
+              </button>
+
+              <button
+                onClick={() => setSelectedTier('Premium')}
+                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center space-x-1.5 ${
+                  selectedTier === 'Premium'
+                    ? 'bg-amber-600 text-white shadow-xs'
+                    : 'bg-slate-100 text-slate-600 hover:bg-amber-50 hover:text-amber-800'
+                }`}
+              >
+                <span>👑 Premium</span>
+                <span className={`px-1.5 py-0.2 rounded-full text-[10px] font-bold ${
+                  selectedTier === 'Premium' ? 'bg-amber-700 text-amber-100' : 'bg-slate-200 text-slate-700'
+                }`}>
+                  {tierCounts.premium}
+                </span>
+              </button>
+            </div>
+
+            {/* Compact Bank Dropdown */}
+            <div className="flex items-center space-x-2">
+              <span className="text-xs font-bold text-slate-500">Bank:</span>
+              <select
+                value={selectedBank}
+                onChange={(e) => setSelectedBank(e.target.value)}
+                className="bg-white border border-slate-200 text-slate-800 text-xs font-semibold rounded-xl px-3 py-1.5 focus:outline-none focus:border-blue-600 shadow-xs"
+              >
+                {banksList.map((b) => (
+                  <option key={b} value={b}>
+                    {b === 'All' ? 'All Banks (16)' : b}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
 
           {/* Row 2: Criteria Toggles & Sorting */}
