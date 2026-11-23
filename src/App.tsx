@@ -16,7 +16,7 @@ import { Scale, ShieldCheck, ArrowUpDown, CheckCircle2 } from 'lucide-react';
 export function App() {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeQuickFilter, setActiveQuickFilter] = useState<string | null>(null);
-  const [sortBy, setSortBy] = useState<'value' | 'fee-asc' | 'lounge-desc'>('value');
+  const [sortBy, setSortBy] = useState<'value' | 'fee-asc' | 'lounge-desc' | 'min-spend-asc'>('value');
   const [selectedTier, setSelectedTier] = useState<'All' | 'Beginner' | 'Mid-Tier' | 'Premium'>('All');
 
   // Faceted Filters
@@ -164,6 +164,10 @@ export function App() {
     return list.sort((a, b) => {
       if (sortBy === 'fee-asc') {
         return a.annualFee - b.annualFee;
+      }
+      if (sortBy === 'min-spend-asc') {
+        const getMinSpend = (c: CreditCard) => c.isLTF ? 0 : (c.feeWaiverSpend ?? (c.annualFee * 100));
+        return getMinSpend(a) - getMinSpend(b);
       }
       if (sortBy === 'lounge-desc') {
         return (b.loungeAccess.domesticQuarterly + b.loungeAccess.internationalYearly) - 
@@ -400,6 +404,7 @@ export function App() {
                 className="bg-white border border-slate-200 text-slate-900 text-xs font-bold rounded-lg px-2.5 py-1 focus:outline-none focus:border-blue-600 shadow-xs"
               >
                 <option value="value">Highest Net Value & Return</option>
+                <option value="min-spend-asc">Lowest Minimum Spend (Fee Waiver)</option>
                 <option value="fee-asc">Lowest Annual Fee</option>
                 <option value="lounge-desc">Most Lounge Access</option>
               </select>

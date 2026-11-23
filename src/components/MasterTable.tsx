@@ -94,12 +94,15 @@ export const MasterTable: React.FC<MasterTableProps> = ({ cards, selectedTier = 
                         </span>
                       )}
                     </div>
-                    <div className="text-[11px] text-slate-500 flex items-center space-x-1.5 mt-0.5">
+                    <div className="text-[11px] text-slate-500 flex flex-wrap items-center gap-1.5 mt-0.5">
                       <span className="font-semibold text-slate-700">{card.bank}</span>
                       <span>•</span>
                       <span>{card.network}</span>
                       <span>•</span>
                       <span className="text-[10px] text-slate-400 font-mono">{card.tier}</span>
+                      <span className="px-1.5 py-0.5 rounded bg-amber-50 text-amber-900 border border-amber-200 text-[10px] font-bold">
+                        Min Spend: {card.isLTF ? '₹0 (LTF)' : card.feeWaiverSpend ? `₹${card.feeWaiverSpend >= 100000 ? `${(card.feeWaiverSpend / 100000).toFixed(card.feeWaiverSpend % 100000 === 0 ? 0 : 1)}L/yr` : `${card.feeWaiverSpend / 1000}k/yr`}` : 'No Waiver'}
+                      </span>
                     </div>
                   </td>
 
@@ -191,23 +194,43 @@ export const MasterTable: React.FC<MasterTableProps> = ({ cards, selectedTier = 
                     )}
                   </td>
 
-                  {/* Fee Waiver Spend */}
-                  <td className="py-4 px-4">
-                    {card.feeWaiverSpend ? (
-                      <div>
-                        <span className="text-slate-900 font-bold">
-                          ₹{(card.feeWaiverSpend / 100000).toFixed(1)} Lakhs
+                  {/* Minimum Spend Column */}
+                  <td className="py-4 px-4 bg-amber-50/25 border-x border-amber-100">
+                    {card.isLTF ? (
+                      <div className="space-y-0.5">
+                        <span className="inline-flex items-center space-x-1 px-2 py-0.5 rounded-md text-[10px] font-black bg-emerald-100 text-emerald-900 border border-emerald-300">
+                          <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+                          <span>₹0 Min Spend</span>
                         </span>
-                        <span className="text-[10px] text-slate-500 block">annual spend</span>
+                        <span className="text-[10px] text-slate-500 block font-semibold">Lifetime Free</span>
+                      </div>
+                    ) : card.feeWaiverSpend ? (
+                      <div>
+                        <div className="text-slate-900 font-black text-sm">
+                          ₹{card.feeWaiverSpend >= 100000 
+                            ? `${(card.feeWaiverSpend / 100000).toFixed(card.feeWaiverSpend % 100000 === 0 ? 0 : 1)} Lakhs` 
+                            : `${(card.feeWaiverSpend / 1000).toFixed(0)}k`}
+                        </div>
+                        <span className="text-[10px] text-amber-800 font-bold block">
+                          Annual fee waiver
+                        </span>
+                        <span className="text-[9px] text-slate-500 font-medium block">
+                          ≈ ₹{Math.round(card.feeWaiverSpend / 12).toLocaleString('en-IN')}/mo
+                        </span>
                       </div>
                     ) : (
-                      <span className="text-slate-500">
-                        {card.isLTF ? 'Always Free' : 'No Waiver'}
-                      </span>
+                      <div>
+                        <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-slate-100 text-slate-700 border border-slate-300">
+                          No Fee Waiver
+                        </span>
+                        <span className="text-[10px] text-slate-500 block mt-0.5">
+                          ₹{card.annualFee.toLocaleString('en-IN')} mandatory
+                        </span>
+                      </div>
                     )}
                   </td>
 
-                  {/* Lounge Criteria */}
+                  {/* Lounge Criteria & Min Spend */}
                   <td className="py-4 px-4">
                     {card.loungeAccess.domesticQuarterly > 0 ? (
                       <div>
@@ -219,11 +242,15 @@ export const MasterTable: React.FC<MasterTableProps> = ({ cards, selectedTier = 
                               : `${card.loungeAccess.domesticQuarterly}/qtr`}
                           </span>
                         </div>
-                        <span className="text-[10px] text-slate-600 block mt-0.5">
+                        <span className="text-[10px] block mt-1">
                           {card.loungeAccess.spendRequiredPreviousQuarter === 0 ? (
-                            <strong className="text-emerald-700 font-bold">⭐ ₹0 Min Spend!</strong>
+                            <span className="inline-flex items-center px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-800 border border-emerald-200 font-black text-[9px]">
+                              ⭐ ₹0 Min Spend
+                            </span>
                           ) : (
-                            `Requires ₹${card.loungeAccess.spendRequiredPreviousQuarter / 1000}k qtr spend`
+                            <span className="inline-flex items-center px-1.5 py-0.5 rounded bg-rose-50 text-rose-800 border border-rose-200 font-bold text-[9px]">
+                              Min ₹{card.loungeAccess.spendRequiredPreviousQuarter >= 1000 ? `${card.loungeAccess.spendRequiredPreviousQuarter / 1000}k` : card.loungeAccess.spendRequiredPreviousQuarter} qtr spend
+                            </span>
                           )}
                         </span>
                       </div>
@@ -375,6 +402,26 @@ export const MasterTable: React.FC<MasterTableProps> = ({ cards, selectedTier = 
                           </div>
                         </div>
 
+                        {/* Minimum Spend Rules Highlight */}
+                        <div className="p-3.5 rounded-xl bg-amber-50/70 border border-amber-200 flex flex-wrap items-center justify-between gap-3 text-xs">
+                          <div className="flex items-center space-x-2">
+                            <Coins className="w-4 h-4 text-amber-700 flex-shrink-0" />
+                            <div>
+                              <span className="font-extrabold text-amber-950">Minimum Spend Checklist: </span>
+                              <span className="text-amber-900">
+                                {card.isLTF 
+                                  ? 'No minimum spend required — card is 100% Lifetime Free (₹0).' 
+                                  : card.feeWaiverSpend 
+                                  ? `Spend min. ₹${(card.feeWaiverSpend / 100000).toFixed(1)} Lakhs/year to waive the ₹${card.annualFee} fee (≈ ₹${Math.round(card.feeWaiverSpend / 12).toLocaleString('en-IN')}/mo).`
+                                  : `Annual fee of ₹${card.annualFee} is mandatory (no fee waiver spend).`}
+                              </span>
+                            </div>
+                          </div>
+                          <div className="text-[11px] font-bold text-amber-900 bg-amber-100/80 px-2.5 py-1 rounded-lg border border-amber-300">
+                            Lounge Gate: {card.loungeAccess.domesticQuarterly > 0 ? (card.loungeAccess.spendRequiredPreviousQuarter === 0 ? '₹0 Min Spend' : `Min. ₹${card.loungeAccess.spendRequiredPreviousQuarter.toLocaleString('en-IN')}/qtr`) : 'N/A'}
+                          </div>
+                        </div>
+
                         {/* Real-world Return Insight Box */}
                         <div className="p-3.5 rounded-xl bg-blue-50 border border-blue-200 flex items-start space-x-2.5 text-xs text-blue-950">
                           <Info className="w-4 h-4 text-blue-600 flex-shrink-0 mt-0.5" />
@@ -441,8 +488,16 @@ export const MasterTable: React.FC<MasterTableProps> = ({ cards, selectedTier = 
                 </div>
               </th>
               <th className="py-4 px-4 min-w-[125px]">Annual Fee</th>
-              <th className="py-4 px-4 min-w-[130px]">Fee Waiver Spend</th>
-              <th className="py-4 px-4 min-w-[180px]">Quarterly Lounge Gate</th>
+              <th className="py-4 px-4 min-w-[155px] bg-amber-50/70 text-amber-950 border-x border-amber-200">
+                <div className="flex items-center space-x-1.5">
+                  <Coins className="w-3.5 h-3.5 text-amber-700" />
+                  <span>Minimum Spend</span>
+                </div>
+                <div className="text-[9px] font-medium text-amber-700/80 normal-case tracking-normal">
+                  Fee waiver requirement
+                </div>
+              </th>
+              <th className="py-4 px-4 min-w-[175px]">Lounge & Min Spend</th>
               <th className="py-4 px-4 min-w-[140px]">RuPay UPI / Forex</th>
               <th className="py-4 px-4 min-w-[220px]">Killer Perk (Why It Wins)</th>
               <th className="py-4 px-4 min-w-[200px] text-rose-700">Exclusion Traps</th>
