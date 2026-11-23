@@ -21,68 +21,53 @@ import {
 
 interface MasterTableProps {
   cards: CreditCard[];
+  selectedTier?: 'All' | 'Beginner' | 'Mid-Tier' | 'Premium';
   onSelectCard: (card: CreditCard) => void;
 }
 
-export const MasterTable: React.FC<MasterTableProps> = ({ cards, onSelectCard }) => {
+export const MasterTable: React.FC<MasterTableProps> = ({ cards, selectedTier = 'All', onSelectCard }) => {
   const [expandedReturnCardId, setExpandedReturnCardId] = useState<string | null>(null);
+
+  const premiumCards = cards.filter(c => c.tier === 'Premium' || c.tier === 'Super-Premium');
+  const midCards = cards.filter(c => c.tier === 'Mid-Tier');
+  const beginnerCards = cards.filter(c => c.tier === 'Beginner');
+
+  const tierSections = [
+    {
+      key: 'premium',
+      title: '👑 Premium & Super-Premium Cards',
+      badge: `${premiumCards.length} Cards`,
+      badgeClass: 'bg-amber-100 text-amber-900 border-amber-300',
+      summary: 'Fee: ₹3,000–₹60,000 • Income > ₹1.5L/mo • Heavy Metal Cards, Unlimited Lounges + Guests, 3.3%–33.3% Return',
+      headerBg: 'bg-gradient-to-r from-amber-500/15 via-amber-500/5 to-white border-y border-amber-200 text-amber-950',
+      cards: premiumCards
+    },
+    {
+      key: 'mid',
+      title: '⚡ Mid-Tier & Everyday Lifestyle Cards',
+      badge: `${midCards.length} Cards`,
+      badgeClass: 'bg-blue-100 text-blue-900 border-blue-300',
+      summary: 'Fee: ₹500–₹3,000 • Income ₹30k–₹1.5L/mo • 5% Accelerated Online Cashback, Dining Perks & Domestic Lounges',
+      headerBg: 'bg-gradient-to-r from-blue-500/15 via-blue-500/5 to-white border-y border-blue-200 text-blue-950',
+      cards: midCards
+    },
+    {
+      key: 'beginner',
+      title: '🌱 Beginner & Starter Essentials',
+      badge: `${beginnerCards.length} Cards`,
+      badgeClass: 'bg-emerald-100 text-emerald-900 border-emerald-300',
+      summary: 'Fee: ₹0–₹500 • Low / Zero Income Hurdle • Lifetime Free (LTF), RuPay UPI QR Payments & High Everyday Utility',
+      headerBg: 'bg-gradient-to-r from-emerald-500/15 via-emerald-500/5 to-white border-y border-emerald-200 text-emerald-950',
+      cards: beginnerCards
+    }
+  ];
 
   const toggleReturnBreakdown = (cardId: string) => {
     setExpandedReturnCardId((prev) => (prev === cardId ? null : cardId));
   };
-  return (
-    <div className="w-full bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-sm">
-      {/* Table Header Bar */}
-      <div className="p-5 border-b border-slate-200 flex flex-wrap items-center justify-between gap-3 bg-slate-50/70">
-        <div>
-          <div className="flex items-center space-x-2">
-            <h2 className="text-xl font-black text-slate-900">The Definitive Indian Credit Card Decision Matrix</h2>
-            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-blue-50 text-blue-700 border border-blue-200">
-              Ranked by True Net Value
-            </span>
-          </div>
-          <p className="text-xs text-slate-600 mt-1">
-            Includes verified account relationship mandates, annual fee waivers, spend-based lounge criteria, and fine print exclusions.
-          </p>
-        </div>
-
-        <div className="text-xs text-slate-600 font-medium">
-          Showing <strong className="text-slate-900 font-bold">{cards.length}</strong> audited credit cards
-        </div>
-      </div>
-
-      {/* Main Table */}
-      <div className="overflow-x-auto">
-        <table className="w-full text-left text-xs border-collapse">
-          <thead>
-            <tr className="border-b border-slate-200 bg-slate-100/80 text-slate-700 font-bold uppercase tracking-wider text-[11px]">
-              <th className="py-4 px-3 text-center w-12">#</th>
-              <th className="py-4 px-4 min-w-[210px]">Card & Bank</th>
-              <th className="py-4 px-4 min-w-[190px] bg-blue-50/80 text-blue-900 border-x border-blue-100">
-                <div className="flex items-center space-x-1.5">
-                  <TrendingUp className="w-3.5 h-3.5 text-blue-600" />
-                  <span>Net Return & Est. Value</span>
-                </div>
-              </th>
-              <th className="py-4 px-4 min-w-[170px] bg-slate-100/60 text-slate-800">
-                <div className="flex items-center space-x-1.5">
-                  <Building className="w-3.5 h-3.5 text-slate-600" />
-                  <span>Bank A/C Needed?</span>
-                </div>
-              </th>
-              <th className="py-4 px-4 min-w-[125px]">Annual Fee</th>
-              <th className="py-4 px-4 min-w-[130px]">Fee Waiver Spend</th>
-              <th className="py-4 px-4 min-w-[180px]">Quarterly Lounge Gate</th>
-              <th className="py-4 px-4 min-w-[140px]">RuPay UPI / Forex</th>
-              <th className="py-4 px-4 min-w-[220px]">Killer Perk (Why It Wins)</th>
-              <th className="py-4 px-4 min-w-[200px] text-rose-700">Exclusion Traps</th>
-              <th className="py-4 px-4 min-w-[180px]">Welcome Milestone</th>
-              <th className="py-4 px-4 text-right">Details</th>
-            </tr>
-          </thead>
-
-          <tbody className="divide-y divide-slate-100 text-slate-700">
-            {cards.map((card, index) => {
+  
+  const renderCardRow = (card: CreditCard, index: number) => {
+    
               const gstFee = Math.round(card.annualFee * 0.18);
               const isExpanded = expandedReturnCardId === card.id;
 
@@ -412,8 +397,92 @@ export const MasterTable: React.FC<MasterTableProps> = ({ cards, onSelectCard })
                 )}
               </React.Fragment>
             );
-          })}
-        </tbody>
+          
+  };
+
+  return (
+    <div className="w-full bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-sm">
+      {/* Table Header Bar */}
+      <div className="p-5 border-b border-slate-200 flex flex-wrap items-center justify-between gap-3 bg-slate-50/70">
+        <div>
+          <div className="flex items-center space-x-2">
+            <h2 className="text-xl font-black text-slate-900">The Definitive Indian Credit Card Decision Matrix</h2>
+            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-blue-50 text-blue-700 border border-blue-200">
+              Ranked by True Net Value
+            </span>
+          </div>
+          <p className="text-xs text-slate-600 mt-1">
+            Includes verified account relationship mandates, annual fee waivers, spend-based lounge criteria, and fine print exclusions.
+          </p>
+        </div>
+
+        <div className="text-xs text-slate-600 font-medium">
+          Showing <strong className="text-slate-900 font-bold">{cards.length}</strong> audited credit cards
+        </div>
+      </div>
+
+      {/* Main Table */}
+      <div className="overflow-x-auto">
+        <table className="w-full text-left text-xs border-collapse">
+          <thead>
+            <tr className="border-b border-slate-200 bg-slate-100/80 text-slate-700 font-bold uppercase tracking-wider text-[11px]">
+              <th className="py-4 px-3 text-center w-12">#</th>
+              <th className="py-4 px-4 min-w-[210px]">Card & Bank</th>
+              <th className="py-4 px-4 min-w-[190px] bg-blue-50/80 text-blue-900 border-x border-blue-100">
+                <div className="flex items-center space-x-1.5">
+                  <TrendingUp className="w-3.5 h-3.5 text-blue-600" />
+                  <span>Net Return & Est. Value</span>
+                </div>
+              </th>
+              <th className="py-4 px-4 min-w-[170px] bg-slate-100/60 text-slate-800">
+                <div className="flex items-center space-x-1.5">
+                  <Building className="w-3.5 h-3.5 text-slate-600" />
+                  <span>Bank A/C Needed?</span>
+                </div>
+              </th>
+              <th className="py-4 px-4 min-w-[125px]">Annual Fee</th>
+              <th className="py-4 px-4 min-w-[130px]">Fee Waiver Spend</th>
+              <th className="py-4 px-4 min-w-[180px]">Quarterly Lounge Gate</th>
+              <th className="py-4 px-4 min-w-[140px]">RuPay UPI / Forex</th>
+              <th className="py-4 px-4 min-w-[220px]">Killer Perk (Why It Wins)</th>
+              <th className="py-4 px-4 min-w-[200px] text-rose-700">Exclusion Traps</th>
+              <th className="py-4 px-4 min-w-[180px]">Welcome Milestone</th>
+              <th className="py-4 px-4 text-right">Details</th>
+            </tr>
+          </thead>
+
+          <tbody className="divide-y divide-slate-100 text-slate-700">
+            {selectedTier === 'All' ? (
+              tierSections.map((section) => {
+                if (section.cards.length === 0) return null;
+                return (
+                  <React.Fragment key={section.key}>
+                    {/* Tier Divider Section Header */}
+                    <tr className={section.headerBg}>
+                      <td colSpan={12} className="py-3 px-4 shadow-xs">
+                        <div className="flex flex-wrap items-center justify-between gap-2">
+                          <div className="flex items-center space-x-2.5">
+                            <span className="text-sm sm:text-base font-black tracking-tight text-slate-900">
+                              {section.title}
+                            </span>
+                            <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider border ${section.badgeClass}`}>
+                              {section.badge}
+                            </span>
+                          </div>
+                          <span className="text-xs text-slate-600 font-semibold hidden md:inline">
+                            {section.summary}
+                          </span>
+                        </div>
+                      </td>
+                    </tr>
+                    {section.cards.map((card, i) => renderCardRow(card, i))}
+                  </React.Fragment>
+                );
+              })
+            ) : (
+              cards.map((card, i) => renderCardRow(card, i))
+            )}
+          </tbody>
         </table>
       </div>
 

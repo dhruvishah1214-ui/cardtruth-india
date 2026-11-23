@@ -16,9 +16,11 @@ export const Hero: React.FC<HeroProps> = ({
 }) => {
   const curatedDecks = [
     { id: 'best-cards', label: '⭐ Best Cards (Top Picks)', icon: Award },
-    { id: null, label: 'All 39 Cards', icon: Layers },
+    { id: 'tier-beginner', label: '🌱 Beginner (₹0–500)', icon: Sparkles },
+    { id: 'tier-mid', label: '⚡ Mid-Tier (₹500–3k)', icon: Layers },
+    { id: 'tier-premium', label: '👑 Premium & Metal', icon: Award },
+    { id: null, label: 'All Audited Cards', icon: Layers },
     { id: 'lounge-free', label: '₹0 Spend Lounge', icon: Plane },
-    { id: 'cashback', label: '5-10% Pure Cashback', icon: Sparkles },
     { id: 'zero-forex', label: '0% Forex Markup', icon: Globe2 },
     { id: 'rupay-upi', label: 'RuPay UPI', icon: QrCode },
     { id: 'ltf', label: 'Lifetime Free', icon: Gift },
