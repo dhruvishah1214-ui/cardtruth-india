@@ -7,13 +7,15 @@ interface HeaderProps {
   onOpenLoungeChecker: () => void;
   onOpenDevaluations: () => void;
   onOpenSubmitUpdate?: () => void;
+  onOpenPromoReel?: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
   onOpenCalculator,
   onOpenLoungeChecker,
   onOpenDevaluations,
-  onOpenSubmitUpdate
+  onOpenSubmitUpdate,
+  onOpenPromoReel
 }) => {
   const [copied, setCopied] = useState(false);
 
@@ -53,6 +55,15 @@ export const Header: React.FC<HeaderProps> = ({
 
         {/* Quick Tools Navigation */}
         <div className="flex items-center space-x-2 sm:space-x-2.5">
+          {onOpenPromoReel && (
+            <button
+              onClick={onOpenPromoReel}
+              className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl text-xs font-black bg-gradient-to-r from-amber-400 to-orange-400 text-slate-950 border border-amber-300 shadow-xs hover:scale-105 transition"
+            >
+              <span>🦆 Watch Reel</span>
+            </button>
+          )}
+
           <button
             onClick={onOpenDevaluations}
             className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 transition shadow-xs"
