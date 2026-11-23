@@ -8,7 +8,6 @@ import { LoungeCheckerModal } from './components/LoungeCheckerModal';
 import { SpendCalculatorModal } from './components/SpendCalculatorModal';
 import { DevaluationModal } from './components/DevaluationModal';
 import { SubmitUpdateModal } from './components/SubmitUpdateModal';
-import { PromoReelModal } from './components/PromoReelModal';
 import { CompareDrawer } from './components/CompareDrawer';
 import { CREDIT_CARDS } from './data/cards';
 import type { CreditCard } from './data/cards';
@@ -34,7 +33,6 @@ export function App() {
   const [isCalculatorModalOpen, setIsCalculatorModalOpen] = useState(false);
   const [isDevaluationModalOpen, setIsDevaluationModalOpen] = useState(false);
   const [isSubmitUpdateModalOpen, setIsSubmitUpdateModalOpen] = useState(false);
-  const [isPromoReelOpen, setIsPromoReelOpen] = useState(false);
 
   // Comparison selection
   const [comparedCardIds, setComparedCardIds] = useState<string[]>([]);
@@ -216,7 +214,6 @@ export function App() {
         onOpenLoungeChecker={() => setIsLoungeModalOpen(true)}
         onOpenDevaluations={() => setIsDevaluationModalOpen(true)}
         onOpenSubmitUpdate={() => setIsSubmitUpdateModalOpen(true)}
-        onOpenPromoReel={() => setIsPromoReelOpen(true)}
       />
 
       {/* Hero Section */}
@@ -513,11 +510,6 @@ export function App() {
       <SubmitUpdateModal
         isOpen={isSubmitUpdateModalOpen}
         onClose={() => setIsSubmitUpdateModalOpen(false)}
-      />
-
-      <PromoReelModal
-        isOpen={isPromoReelOpen}
-        onClose={() => setIsPromoReelOpen(false)}
       />
 
       <CompareDrawer
